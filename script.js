@@ -29,7 +29,9 @@ async function getNumberFact(e) {
         return;
     }
     try {
-        const response = await fetch(`http://numbersapi.com/${number.value}`);
+        const proxyUrl = 'http://localhost:8080/';
+        const targetUrl = `http://numbersapi.com/${numberValue}`;
+        const response = await fetch(proxyUrl + targetUrl);
         fact = await response.text();
         showFact();
         number.value='';
