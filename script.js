@@ -4,6 +4,7 @@ const number = document.getElementById('number');
 const getFactBtn = document.getElementById('getFact');
 const factContainer = document.getElementById('fact-container');
 const factDetail = document.getElementById('fact-detail');
+const copyBtn = document.getElementById('copyFact');
 const newFactBtn = document.getElementById('newFact');
 const errorContainer = document.getElementById('error-container');
 const errorDetail = document.getElementById('error');
@@ -14,7 +15,7 @@ let fact = '';
 // check number entered to ensure it is positive and less than or equal to 1000
 function isValidNumber(value) {
     const num = parseInt(value, 10);
-    return Number.isInteger(num) && num > 0 && num <= 1000;
+    return Number.isInteger(num) && num > 0 && num <= 100;
 }
 
 
@@ -25,14 +26,13 @@ async function getNumberFact(e) {
     const numberValue = number.value;
     if (!isValidNumber(number.value)) {
         errorContainer.hidden = false;
-        errorDetail.textContent = 'Please enter a positive number between 1 and 1000!';
+        errorDetail.textContent = 'Please enter a positive number between 1 and 100!';
         return;
     }
     try {
-        const proxyUrl = 'http://localhost:8080/';
-        const targetUrl = `http://numbersapi.com/${numberValue}`;
-        const response = await fetch(proxyUrl + targetUrl);
-        fact = await response.text();
+        const response = await fetch('./number_facts.json');
+        const facts = await response.json();
+        fact = facts[numberValue];
         showFact();
         number.value='';
     } catch (error) {
@@ -62,7 +62,23 @@ function showInput() {
     inputContainer.hidden = false;
 }
 
+
+//copy fact
+function copyFact() {
+    const fact = factDetail.textContent;
+    navigator.clipboard.writeText(fact).then(() => {
+        inputContainer.hidden = true;
+        factContainer.hidden = true;
+        alert('Fact copied to clipboard!');
+        showFact();
+    }).catch((error) => {
+        console.error('Error copying fact:', error);
+        alert('Error copying fact.');
+    });
+}
+
 //event listeners
 form.addEventListener('submit', getNumberFact);
 newFactBtn.addEventListener('click', showInput);
 errorBtn.addEventListener('click', showInput);
+copyBtn.addEventListener('click', copyFact);
