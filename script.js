@@ -29,7 +29,7 @@ async function getNumberFact(e) {
         return;
     }
     try {
-        const response = await fetch(`http://numbersapi.com/${number.value}`);
+        const response = await fetch(`https://numbersapi.com/${number.value}`);
         fact = await response.text();
         showFact();
         number.value='';
